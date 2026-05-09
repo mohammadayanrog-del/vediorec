@@ -1,0 +1,87 @@
+╔══════════════════════════════════════════════════════════════════╗
+║         VideoRec — Updated Install Guide (Draw Pen Fix)         ║
+╚══════════════════════════════════════════════════════════════════╝
+
+WHAT WAS FIXED
+──────────────
+The webcam overlay was going black when a draw-pen / screen annotation
+app (like Epic Pen, Annotator, gInk, etc.) was active. This is now
+fixed with these changes:
+
+  1. Electron flags to disable background throttling — prevents the
+     overlay renderer from being paused when another window is on top.
+  2. Overlay window type set to 'toolbar'/'panel' + 'screen-saver'
+     always-on-top level — puts it above annotation tools.
+  3. setContentProtection(false) — stops screen-capture tools from
+     rendering the overlay as a black box.
+  4. Canvas-based watchdog in overlay.html — detects all-black video
+     frames every 2 seconds and auto-reconnects the webcam stream.
+  5. Track.onended handler — immediately reconnects if the camera
+     track is forcefully ended by another app.
+
+STEP 1 — INSTALL NODE.JS
+─────────────────────────
+1. Go to: https://nodejs.org
+2. Download the LTS version (e.g. 20.x or 22.x)
+3. Run the installer — keep all defaults, make sure
+   "Add to PATH" is checked
+4. Open a terminal (Command Prompt / PowerShell on Windows,
+   Terminal on Mac/Linux) and verify:
+     node --version
+     npm --version
+   Both should print a version number.
+
+STEP 2 — PLACE THE APP FILES
+──────────────────────────────
+Put the VideoRec folder anywhere you like, for example:
+  Windows:  C:\Users\YourName\VideoRec
+  Mac/Linux: ~/VideoRec
+
+STEP 3 — INSTALL DEPENDENCIES
+───────────────────────────────
+Open a terminal IN the VideoRec folder:
+  Windows: Right-click in the folder → "Open in Terminal"
+           or: cd C:\Users\YourName\VideoRec
+  Mac/Linux: cd ~/VideoRec
+
+Then run:
+  npm install
+
+This installs Electron. It may take 1–3 minutes.
+
+STEP 4 — RUN THE APP
+──────────────────────
+In the same terminal:
+  npm start
+
+The app window will open. Click the camera icon to show the
+webcam overlay.
+
+STEP 5 — USE WITH DRAW PEN APP
+────────────────────────────────
+1. Start VideoRec first, show the webcam overlay
+2. Start your draw pen / annotation app
+3. The webcam overlay will stay visible and active
+4. If it ever flickers briefly, a yellow dot will appear
+   in the top-right corner while it auto-reconnects
+   (this takes ~1.5 seconds)
+
+OPTIONAL — BUILD AN .EXE / .DMG (no terminal needed to run)
+────────────────────────────────────────────────────────────
+In the VideoRec folder, run:
+  npm run build-win     ← Windows (.exe installer)
+  npm run build-mac     ← macOS (.dmg)
+  npm run build-linux   ← Linux (.AppImage)
+
+The built file appears in the "dist" folder.
+Note: Building requires electron-builder to download (~100MB).
+
+TROUBLESHOOTING
+───────────────
+• "electron: command not found" → run: npm install  (again)
+• Camera not showing → allow camera permissions in Windows
+  Settings → Privacy → Camera
+• Still going black → make sure the draw pen app does NOT have
+  "capture entire screen" mode. Use "draw on top" mode instead.
+• App won't start → make sure Node.js version is 18 or higher
+
